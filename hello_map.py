@@ -1,24 +1,22 @@
 import sys
-from importlib.resources import files
-
 from PySide6.QtCore import QSize, Qt
-from PySide6.QtGui import QAction, QIcon
 from PySide6.QtWidgets import QApplication, QMainWindow, QToolBar
 from geokernel import Viewer, ViewerTool
+from common import ensure_sample_file, tool_action
 
-ICON_DIR = files("geokernel").joinpath("assets/images")
-
-
-def tool_action(icon_name: str, text: str, window: QMainWindow) -> QAction:
-    action = QAction(QIcon(str(ICON_DIR / icon_name)), text, window)
-    action.setToolTip(text)
-    action.setStatusTip(text)
-    return action
-
+WORLD_ZIP_URL = "https://github.com/geokernel-io/GeoKernel.SampleData/releases/download/v1/world_4326.zip"
 
 def main() -> None:
 
     app = QApplication(sys.argv)
+
+    world_layer = ensure_sample_file(
+        app=app,
+        zip_url=WORLD_ZIP_URL,
+        zip_name="world_4326.zip",
+        target_folder="world_4326",
+        required_file="world_4326.shp",
+    )
 
     window = QMainWindow()
     window.setWindowTitle("HelloMap")
@@ -27,14 +25,7 @@ def main() -> None:
     viewer = Viewer()
     viewer.set_activation_type("Developer")
     viewer.set_tool(ViewerTool.PAN)
-    viewer.add_layer(r"D:\projects\GeoKernel.Examples.Qt\data\shapefile\world_4326.shp")
-    # viewer.set_map_style("midnight-blue")
-    # viewer.set_map_style("vintage-map")
-    # viewer.set_map_style("arcgis-pro-modern")
-    # viewer.set_map_style("neon")
-    # viewer.set_map_style("blueprint")
-    # viewer.set_map_style("google-light")
-    
+    viewer.add_layer(str(world_layer))   
 
     window.setCentralWidget(viewer.qt_widget())
 
