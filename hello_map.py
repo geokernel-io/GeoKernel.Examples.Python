@@ -25,7 +25,8 @@ def main() -> None:
     viewer = Viewer()
     viewer.set_activation_type("Developer")
     viewer.set_tool(ViewerTool.PAN)
-    viewer.add_layer(str(world_layer))   
+    viewer.add_layer(str(world_layer))
+    viewer.set_map_style("SoftProfessional")
 
     window.setCentralWidget(viewer.qt_widget())
 
