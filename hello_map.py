@@ -26,7 +26,6 @@ def main() -> None:
     window.resize(1200, 800)
 
     viewer = Viewer()
-    viewer.set_activation_type("Developer")
     viewer.set_tool(ViewerTool.PAN)
     viewer.add_layer(str(world_layer))
     viewer.set_map_style("SoftProfessional")
