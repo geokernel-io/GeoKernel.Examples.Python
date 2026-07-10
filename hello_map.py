@@ -1,5 +1,7 @@
 import sys
+from pathlib import Path
 from PySide6.QtCore import QSize, Qt
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication, QMainWindow, QToolBar
 from geokernel import Viewer, ViewerTool
 from common import ensure_sample_file, tool_action
@@ -7,6 +9,8 @@ from common import ensure_sample_file, tool_action
 def main() -> None:
 
     app = QApplication(sys.argv)
+    app_icon = QIcon(str(Path(__file__).with_name("GeoKernelAppIcon.ico")))
+    app.setWindowIcon(app_icon)
 
     world_layer = ensure_sample_file(
         app=app,
@@ -17,6 +21,7 @@ def main() -> None:
     )
 
     window = QMainWindow()
+    window.setWindowIcon(app_icon)
     window.setWindowTitle("HelloMap")
     window.resize(1200, 800)
 
