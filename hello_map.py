@@ -4,15 +4,13 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QToolBar
 from geokernel import Viewer, ViewerTool
 from common import ensure_sample_file, tool_action
 
-WORLD_ZIP_URL = "https://github.com/geokernel-io/GeoKernel.SampleData/releases/download/v1/world_4326.zip"
-
 def main() -> None:
 
     app = QApplication(sys.argv)
 
     world_layer = ensure_sample_file(
         app=app,
-        zip_url=WORLD_ZIP_URL,
+        zip_url="https://github.com/geokernel-io/GeoKernel.SampleData/releases/download/v1/world_4326.zip",
         zip_name="world_4326.zip",
         target_folder="world_4326",
         required_file="world_4326.shp",
