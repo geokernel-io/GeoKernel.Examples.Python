@@ -26,7 +26,6 @@ def main() -> None:
     window.resize(1200, 800)
 
     viewer = Viewer()
-    viewer.set_license_key('G36U-F99B-83M4-FD8F-BMCZ')
     viewer.set_tool(ViewerTool.PAN)
     viewer.add_layer(str(world_layer))    
 
