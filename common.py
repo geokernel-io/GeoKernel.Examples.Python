@@ -1,20 +1,14 @@
 import urllib.request
 import zipfile
-from importlib.resources import files
 from pathlib import Path
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QAction, QIcon
-from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QProgressDialog
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QApplication, QMessageBox, QProgressDialog
 
 ROOT_DIR = Path(__file__).resolve().parent
 DATA_DIR = ROOT_DIR / "data"
-ICON_DIR = files("geokernel").joinpath("assets/images")
-
-def tool_action(icon_name: str, text: str, window: QMainWindow) -> QAction:
-    action = QAction(QIcon(str(ICON_DIR / icon_name)), text, window)
-    action.setToolTip(text)
-    action.setStatusTip(text)
-    return action
+def application_icon() -> QIcon:
+    return QIcon(str(ROOT_DIR / "GeoKernelAppIcon.ico"))
 
 def download_file(url: str, target: Path, app: QApplication, title: str = "GeoKernel Sample Data") -> None:
     target.parent.mkdir(parents=True, exist_ok=True)
