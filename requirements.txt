@@ -1,1 +1,1 @@
-geokernel==1.1.34
+geokernel==1.1.44

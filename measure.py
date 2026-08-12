@@ -1,5 +1,4 @@
 import sys
-from importlib.resources import files
 from pathlib import Path
 from PySide6.QtCore import QSize, Qt, QTimer
 from PySide6.QtGui import QAction, QActionGroup, QIcon
@@ -13,7 +12,6 @@ class MeasureWindow(QMainWindow):
     def __init__(self, app: QApplication) -> None:
         super().__init__()
         self.app = app
-        self.icon_dir = files("geokernel").joinpath("assets/images")
         self.local_icon_dir = Path(__file__).with_name("images")
         self.viewer = Viewer()
         self.viewer.set_tool(ViewerTool.PAN)
@@ -34,20 +32,19 @@ class MeasureWindow(QMainWindow):
         self.addToolBar(self.toolbar)
         self.tool_group = QActionGroup(self)
         self.tool_group.setExclusive(True)
-        self.pan_action = self.add_tool("Pan.svg", "Pan", self.activate_pan, True)
-        self.distance_action = self.add_tool("MeasureDistance.svg", "Distance", self.activate_distance, True)
-        self.area_action = self.add_tool("MeasureArea.svg", "Area", self.activate_area, True)
+        self.pan_action = self.add_tool("Pan.png", "Pan", self.activate_pan, True)
+        self.distance_action = self.add_tool("measure-distance.png", "Distance", self.activate_distance, True)
+        self.area_action = self.add_tool("measure-area.png", "Area", self.activate_area, True)
         self.tool_group.addAction(self.pan_action)
         self.tool_group.addAction(self.distance_action)
         self.tool_group.addAction(self.area_action)
         self.toolbar.addSeparator()
-        self.add_tool("Delete.svg", "Clear", self.viewer.clear_measure)
-        self.add_tool("FullExtent.svg", "Full Extent", self.viewer.full_extent)
+        self.add_tool("Delete.png", "Clear", self.viewer.clear_measure)
+        self.add_tool("FullExtent.png", "Full Extent", self.viewer.full_extent)
         self.pan_action.setChecked(True)
 
     def add_tool(self, icon_name: str, text: str, callback, checkable: bool = False) -> QAction:
-        local_path = self.local_icon_dir / icon_name
-        icon_path = local_path if local_path.exists() else self.icon_dir.joinpath(icon_name)
+        icon_path = self.local_icon_dir / icon_name
         action = QAction(QIcon(str(icon_path)), text, self)
         action.setToolTip(text)
         action.setCheckable(checkable)
