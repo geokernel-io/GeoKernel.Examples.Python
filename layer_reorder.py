@@ -1,5 +1,4 @@
 import sys
-from importlib.resources import files
 from pathlib import Path
 from PySide6.QtCore import QSize, Qt, QTimer
 from PySide6.QtGui import QAction, QIcon
@@ -48,7 +47,7 @@ class LayerReorderWindow(QMainWindow):
     def __init__(self, app: QApplication) -> None:
         super().__init__()
         self.app = app
-        self.icon_dir = files("geokernel").joinpath("assets/images")
+        self.icon_dir = Path(__file__).resolve().parent / "images"
 
         app_icon = QIcon(str(Path(__file__).with_name("GeoKernelAppIcon.ico")))
         self.setWindowIcon(app_icon)
@@ -93,12 +92,12 @@ class LayerReorderWindow(QMainWindow):
         self.toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
         self.addToolBar(self.toolbar)
 
-        self.add_tool("ZoomIn.svg", "Zoom In", self.viewer.zoom_in)
-        self.add_tool("ZoomOut.svg", "Zoom Out", self.viewer.zoom_out)
-        self.add_tool("FullExtent.svg", "Full Extent", self.viewer.full_extent)
+        self.add_tool("ZoomIn.png", "Zoom In", self.viewer.zoom_in)
+        self.add_tool("ZoomOut.png", "Zoom Out", self.viewer.zoom_out)
+        self.add_tool("FullExtent.png", "Full Extent", self.viewer.full_extent)
         self.toolbar.addSeparator()
-        self.add_tool("RectangularZoom.svg", "Zoom Rect", self.activate_zoom_box)
-        self.add_tool("Pan.svg", "Pan", self.activate_pan)
+        self.add_tool("RectangularZoom.png", "Zoom Rect", self.activate_zoom_box)
+        self.add_tool("Pan.png", "Pan", self.activate_pan)
 
     def add_tool(self, icon_name: str, text: str, callback) -> QAction:
         icon = QIcon(str(self.icon_dir.joinpath(icon_name)))

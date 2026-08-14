@@ -1,5 +1,5 @@
 import sys
-from importlib.resources import files
+from pathlib import Path
 from PySide6.QtCore import QSize, Qt, QTimer
 from PySide6.QtGui import QAction, QIcon
 from PySide6.QtWidgets import QApplication, QLabel, QMainWindow, QMessageBox, QToolBar, QVBoxLayout, QWidget
@@ -13,7 +13,7 @@ class Wgs84SetupWindow(QMainWindow):
         super().__init__()
 
         self.app = app
-        self.icons = files("geokernel").joinpath("assets/images")
+        self.icons = Path(__file__).resolve().parent / "images"
         self.viewer = Viewer()
         self.viewer.set_tool(ViewerTool.PAN)
         self.viewer.set_event_callback(self.on_viewer_event)
@@ -52,17 +52,17 @@ class Wgs84SetupWindow(QMainWindow):
         toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
         self.addToolBar(toolbar)
 
-        self.add_tool(toolbar, "ZoomIn.svg", "Zoom In", self.viewer.zoom_in)
-        self.add_tool(toolbar, "ZoomOut.svg", "Zoom Out", self.viewer.zoom_out)
-        self.add_tool(toolbar, "FullExtent.svg", "Full Extent", self.show_world_extent)
+        self.add_tool(toolbar, "ZoomIn.png", "Zoom In", self.viewer.zoom_in)
+        self.add_tool(toolbar, "ZoomOut.png", "Zoom Out", self.viewer.zoom_out)
+        self.add_tool(toolbar, "FullExtent.png", "Full Extent", self.show_world_extent)
         toolbar.addSeparator()
         self.add_tool(
             toolbar,
-            "RectangularZoom.svg",
+            "RectangularZoom.png",
             "Zoom Rect",
             self.activate_zoom_box,
         )
-        self.add_tool(toolbar, "Pan.svg", "Pan", self.activate_pan)
+        self.add_tool(toolbar, "Pan.png", "Pan", self.activate_pan)
 
     def add_tool(self, toolbar, icon_name: str, text: str, callback) -> QAction:
         action = QAction(QIcon(str(self.icons.joinpath(icon_name))), text, self)

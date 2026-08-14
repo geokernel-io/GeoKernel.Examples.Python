@@ -1,5 +1,4 @@
 import sys
-from importlib.resources import files
 from pathlib import Path
 from PySide6.QtCore import QSize, Qt, QTimer
 from PySide6.QtGui import QAction, QActionGroup, QIcon
@@ -14,7 +13,7 @@ class MultiWindowSyncWindow(QMainWindow):
     def __init__(self, app: QApplication) -> None:
         super().__init__()
         self.app = app
-        self.icon_dir = files("geokernel").joinpath("assets/images")
+        self.icon_dir = Path(__file__).resolve().parent / "images"
         self.left_viewer = Viewer()
         self.right_viewer = Viewer()
         self.left_viewer.set_tool(ViewerTool.PAN)
@@ -64,11 +63,11 @@ class MultiWindowSyncWindow(QMainWindow):
         self.sync_action.setChecked(True)
         self.sync_action.toggled.connect(self.update_sync_text)
         toolbar.addSeparator()
-        self.zoom_in_action = self.add_tool(toolbar, "ZoomIn.svg", "Zoom In", self.zoom_in)
-        self.zoom_out_action = self.add_tool(toolbar, "ZoomOut.svg", "Zoom Out", self.zoom_out)
-        self.full_extent_action = self.add_tool(toolbar, "FullExtent.svg", "Full Extent", self.full_extent)
-        self.zoom_box_action = self.add_tool(toolbar, "RectangularZoom.svg", "Zoom Box", self.activate_zoom_box)
-        self.pan_action = self.add_tool(toolbar, "Pan.svg", "Pan", self.activate_pan)
+        self.zoom_in_action = self.add_tool(toolbar, "ZoomIn.png", "Zoom In", self.zoom_in)
+        self.zoom_out_action = self.add_tool(toolbar, "ZoomOut.png", "Zoom Out", self.zoom_out)
+        self.full_extent_action = self.add_tool(toolbar, "FullExtent.png", "Full Extent", self.full_extent)
+        self.zoom_box_action = self.add_tool(toolbar, "RectangularZoom.png", "Zoom Box", self.activate_zoom_box)
+        self.pan_action = self.add_tool(toolbar, "Pan.png", "Pan", self.activate_pan)
         self.zoom_box_action.setCheckable(True)
         self.pan_action.setCheckable(True)
         self.pan_action.setChecked(True)

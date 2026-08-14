@@ -107,7 +107,7 @@ class OnTheFlyReprojectWindow(QMainWindow):
         self.addToolBar(toolbar)
 
         full_extent_action = QAction(
-            QIcon(str(self.icons / "FullExtent.svg")), "Full Extent", self
+            QIcon(str(self.icons / "FullExtent.png")), "Full Extent", self
         )
         full_extent_action.triggered.connect(self.show_selected_extent)
         toolbar.addAction(full_extent_action)

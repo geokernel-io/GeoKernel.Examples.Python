@@ -1,5 +1,4 @@
 import sys
-from importlib.resources import files
 from pathlib import Path
 from PySide6.QtCore import QSize, Qt, QTimer
 from PySide6.QtGui import QAction, QActionGroup, QIcon
@@ -16,7 +15,7 @@ class XyzTileSizeWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
 
-        self.icons = files("geokernel").joinpath("assets/images")
+        self.icons = Path(__file__).resolve().parent / "images"
         self.left_viewer = Viewer()
         self.right_viewer = Viewer()
         self.left_viewer.set_tool(ViewerTool.PAN)
@@ -63,11 +62,11 @@ class XyzTileSizeWindow(QMainWindow):
         toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
         self.addToolBar(toolbar)
 
-        self.add_action(toolbar, "ZoomIn.svg", "Zoom In", self.zoom_in_both)
-        self.add_action(toolbar, "ZoomOut.svg", "Zoom Out", self.zoom_out_both)
+        self.add_action(toolbar, "ZoomIn.png", "Zoom In", self.zoom_in_both)
+        self.add_action(toolbar, "ZoomOut.png", "Zoom Out", self.zoom_out_both)
         self.add_action(
             toolbar,
-            "FullExtent.svg",
+            "FullExtent.png",
             "Full Extent",
             self.show_default_extent,
         )
@@ -78,7 +77,7 @@ class XyzTileSizeWindow(QMainWindow):
 
         self.zoom_box_action = self.add_action(
             toolbar,
-            "RectangularZoom.svg",
+            "RectangularZoom.png",
             "Zoom Rect",
             self.activate_zoom_box,
         )
@@ -87,7 +86,7 @@ class XyzTileSizeWindow(QMainWindow):
 
         self.pan_action = self.add_action(
             toolbar,
-            "Pan.svg",
+            "Pan.png",
             "Pan",
             self.activate_pan,
         )

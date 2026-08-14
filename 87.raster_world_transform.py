@@ -1,5 +1,5 @@
 import sys
-from importlib.resources import files
+from pathlib import Path
 from PySide6.QtCore import QSignalBlocker, QSize, Qt, QTimer
 from PySide6.QtGui import QAction, QActionGroup, QIcon
 from PySide6.QtWidgets import QApplication, QDockWidget, QFormLayout, QMainWindow, QMessageBox, QSpinBox, QTextEdit, QToolBar, QWidget
@@ -14,7 +14,7 @@ class RasterWorldTransformWindow(QMainWindow):
         super().__init__()
 
         self.app = app
-        self.icons = files("geokernel").joinpath("assets/images")
+        self.icons = Path(__file__).resolve().parent / "images"
         self.viewer = Viewer()
         self.viewer.set_tool(ViewerTool.PAN)
         self.viewer.set_event_callback(self.on_viewer_event)
@@ -56,11 +56,11 @@ class RasterWorldTransformWindow(QMainWindow):
         toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonIconOnly)
         self.addToolBar(toolbar)
 
-        self.add_action(toolbar, "ZoomIn.svg", "Zoom In", self.viewer.zoom_in)
-        self.add_action(toolbar, "ZoomOut.svg", "Zoom Out", self.viewer.zoom_out)
+        self.add_action(toolbar, "ZoomIn.png", "Zoom In", self.viewer.zoom_in)
+        self.add_action(toolbar, "ZoomOut.png", "Zoom Out", self.viewer.zoom_out)
         self.add_action(
             toolbar,
-            "FullExtent.svg",
+            "FullExtent.png",
             "Full Extent",
             self.viewer.full_extent,
         )
@@ -71,7 +71,7 @@ class RasterWorldTransformWindow(QMainWindow):
 
         self.zoom_box_action = self.add_action(
             toolbar,
-            "RectangularZoom.svg",
+            "RectangularZoom.png",
             "Zoom Rect",
             self.activate_zoom_box,
         )
@@ -80,7 +80,7 @@ class RasterWorldTransformWindow(QMainWindow):
 
         self.pan_action = self.add_action(
             toolbar,
-            "Pan.svg",
+            "Pan.png",
             "Pan",
             self.activate_pan,
         )
@@ -90,7 +90,7 @@ class RasterWorldTransformWindow(QMainWindow):
 
         self.pick_action = self.add_action(
             toolbar,
-            "Identify.svg",
+            "Identify.png",
             "Pick World Point",
             self.activate_info,
         )
