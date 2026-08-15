@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-from PySide6.QtCore import QSize, Qt, QTimer
+from PySide6.QtCore import QSize, Qt, QTimer, qInstallMessageHandler
 from PySide6.QtGui import QAction, QActionGroup, QIcon
 from PySide6.QtWidgets import QApplication, QMainWindow, QMessageBox, QToolBar
 from geokernel import Extent, Viewer, ViewerTool

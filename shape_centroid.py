@@ -1,17 +1,59 @@
 import sys
-from PySide6.QtCore import Qt, QTimer
+
+from PySide6.QtCore import QTimer, Qt
 from PySide6.QtWidgets import (
     QApplication,
-    QDockWidget,
+    QLabel,
     QMainWindow,
+    QSplitter,
     QTextEdit,
     QToolBar,
 )
+
 from geokernel import Extent, Viewer, ViewerTool
+
 from common import application_icon
 
-RING = [(-4.0, -2.0), (3.0, -2.0), (4.0, 1.0), (1.0, 4.0), (-3.0, 3.0), (-4.0, -2.0)]
-VIEW_EXTENT = Extent(-5.0, -3.0, 5.0, 5.0)
+
+POLYGON_RING = [
+    (-4.4, -2.0),
+    (3.8, -2.0),
+    (3.8, 2.0),
+    (1.0, 2.0),
+    (1.0, -0.4),
+    (-1.1, -0.4),
+    (-1.1, 2.0),
+    (-4.4, 2.0),
+    (-4.4, -2.0),
+]
+SAMPLE_EXTENT = Extent(-5.4, -3.0, 4.8, 3.0)
+
+POLYGON_STYLE = {
+    "fillColor": "#BFD7EA",
+    "fillOpacity": 110,
+    "lineColor": "#1F6F8B",
+    "lineWidth": 2.2,
+}
+CENTROID_STYLE = {
+    "pointColor": "#D95D39",
+    "pointSize": 12.0,
+    "lineColor": "#8F2D1B",
+    "lineWidth": 1.4,
+}
+LABEL_POINT_STYLE = {
+    "pointColor": "#2A9D8F",
+    "pointSize": 12.0,
+    "lineColor": "#145A4B",
+    "lineWidth": 1.4,
+}
+
+
+def point_text(x: float, y: float) -> str:
+    return f"({x:.3f}, {y:.3f})"
+
+
+def bool_text(value: object) -> str:
+    return str(bool(value)).lower()
 
 
 class ShapeCentroidWindow(QMainWindow):
@@ -21,73 +63,87 @@ class ShapeCentroidWindow(QMainWindow):
         self.viewer.set_tool(ViewerTool.PAN)
         self.viewer_widget = self.viewer.qt_widget()
         self.initialized = False
+
         self.setWindowTitle("ShapeCentroid")
         self.setWindowIcon(application_icon())
-        self.resize(1100, 760)
-        self.setCentralWidget(self.viewer_widget)
+        self.resize(1040, 680)
+        self.setMinimumSize(760, 520)
         self.create_ui()
 
     def create_ui(self) -> None:
-        toolbar = QToolBar("Centroid", self)
+        toolbar = QToolBar("Shape centroid", self)
         toolbar.setMovable(False)
-        calculate = toolbar.addAction("Calculate Centroid")
         full_extent = toolbar.addAction("Full Extent")
-        calculate.triggered.connect(self.calculate)
-        full_extent.triggered.connect(self.show_extent)
+        full_extent.triggered.connect(self.set_sample_extent)
+        toolbar.addSeparator()
+        toolbar.addWidget(
+            QLabel("GisShapePolygon::centroid() / labelPoint()", toolbar)
+        )
         self.addToolBar(toolbar)
+
         self.details = QTextEdit(self)
         self.details.setReadOnly(True)
-        dock = QDockWidget("Centroid details", self)
-        dock.setWidget(self.details)
-        self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, dock)
+        self.details.setMinimumWidth(350)
+
+        splitter = QSplitter(Qt.Orientation.Horizontal, self)
+        splitter.addWidget(self.viewer_widget)
+        splitter.addWidget(self.details)
+        splitter.setStretchFactor(0, 1)
+        splitter.setStretchFactor(1, 0)
+        splitter.setSizes([690, 350])
+        self.setCentralWidget(splitter)
 
     def initialize_viewer(self) -> None:
         if self.initialized:
             return
+
         self.initialized = True
         self.viewer.resize(self.viewer_widget.width(), self.viewer_widget.height())
         self.viewer.show()
-        self.render_source()
-        self.show_extent()
-        self.details.setPlainText(
-            "Click Calculate Centroid to calculate centroid and label point."
-        )
+        self.render_scene()
+        self.set_sample_extent()
 
-    def render_source(self) -> None:
+    def render_scene(self) -> None:
+        info = self.viewer.polygon_centroid_info(POLYGON_RING)
+        centroid = info["centroid"]
+        label_point = info["labelPoint"]
+        centroid_x = float(centroid["x"])
+        centroid_y = float(centroid["y"])
+        label_x = float(label_point["x"])
+        label_y = float(label_point["y"])
+
         self.viewer.clear_shapes()
-        self.viewer.add_polygon_shape(
-            RING,
-            {
-                "fillColor": "#A8DADC",
-                "fillOpacity": 150,
-                "lineColor": "#167895",
-                "lineWidth": 2.0,
-            },
-        )
+        if not self.viewer.add_polygon_shape(POLYGON_RING, POLYGON_STYLE):
+            raise RuntimeError("Source concave polygon could not be rendered.")
+        if not self.viewer.add_point_shape(
+            centroid_x, centroid_y, CENTROID_STYLE
+        ):
+            raise RuntimeError("Centroid point could not be rendered.")
+        if not self.viewer.add_point_shape(
+            label_x, label_y, LABEL_POINT_STYLE
+        ):
+            raise RuntimeError("Label point could not be rendered.")
 
-    def calculate(self) -> None:
-        info = self.viewer.polygon_centroid_info(RING)
-        centroid = info.get("centroid", {})
-        label_point = info.get("labelPoint", {})
-        cx, cy = float(centroid.get("x", 0.0)), float(centroid.get("y", 0.0))
-        lx, ly = float(label_point.get("x", 0.0)), float(label_point.get("y", 0.0))
-        self.render_source()
-        self.viewer.add_point_shape(
-            cx, cy, {"pointColor": "#E4572E", "pointSize": 11.0}
-        )
-        self.viewer.add_point_shape(lx, ly, {"pointColor": "#2A9D8F", "pointSize": 9.0})
         self.details.setPlainText(
-            "GisShape::centroid / labelPoint\n\n"
-            f"Centroid: ({cx:.3f}, {cy:.3f})\n"
-            f"Centroid inside: {info.get('centroidInside')}\n\n"
-            f"Label point: ({lx:.3f}, {ly:.3f})\n"
-            f"Label point inside: {info.get('labelPointInside')}"
+            "GisShapePolygon::centroid() / labelPoint()\n\n"
+            f"Centroid: {point_text(centroid_x, centroid_y)}\n"
+            f"Centroid inside polygon: {bool_text(info['centroidInside'])}\n\n"
+            f"Label point: {point_text(label_x, label_y)}\n"
+            f"Label point inside polygon: {bool_text(info['labelPointInside'])}\n\n"
+            "Visual guide:\n"
+            "Blue polygon: source concave polygon\n"
+            "Orange point: centroid()\n"
+            "Green point: labelPoint()\n\n"
+            "For concave polygons the mathematical centroid can fall outside "
+            "the visible area. labelPoint() is selected as an interior point "
+            "suitable for labels."
         )
-        self.viewer.invalidate_render_cache(True, True)
-        self.statusBar().showMessage("Centroid and label point calculated.")
 
-    def show_extent(self) -> None:
-        self.viewer.set_view_extent(VIEW_EXTENT)
+        self.viewer.invalidate_render_cache(True, True)
+        self.statusBar().showMessage("Centroid and label point rendered.")
+
+    def set_sample_extent(self) -> None:
+        self.viewer.set_view_extent(SAMPLE_EXTENT)
 
     def closeEvent(self, event) -> None:
         self.viewer.close()
@@ -96,7 +152,9 @@ class ShapeCentroidWindow(QMainWindow):
 
 def main() -> None:
     app = QApplication(sys.argv)
+    app.setApplicationName("ShapeCentroid")
     app.setWindowIcon(application_icon())
+
     window = ShapeCentroidWindow()
     window.show()
     QTimer.singleShot(0, window.initialize_viewer)

@@ -11,39 +11,39 @@ from common import application_icon
 class XyzPreset:
     name: str
     url_template: str
-    min_zoom: int
-    max_zoom: int
-    tile_size: int
-    attribution: str
+    min_zoom: int = 0
+    max_zoom: int = 19
+    tile_size: int = 256
+    attribution: str = ""
 
 PRESETS = (
-    XyzPreset(
-        "OpenStreetMap",
-        "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-        0,
-        19,
-        256,
-        "© OpenStreetMap contributors",
-    ),
-    XyzPreset(
-        "OpenTopoMap",
-        "https://tile.opentopomap.org/{z}/{x}/{y}.png",
-        0,
-        17,
-        256,
-        "© OpenTopoMap contributors",
-    ),
-    XyzPreset(
-        "Esri World Imagery",
-        (
-            "https://server.arcgisonline.com/ArcGIS/rest/services/"
-            "World_Imagery/MapServer/tile/{z}/{y}/{x}"
-        ),
-        0,
-        19,
-        256,
-        "Tiles © Esri",
-    ),
+    XyzPreset("Bing Virtual Earth", "http://ecn.t3.tiles.virtualearth.net/tiles/a{q}.jpeg?g=1"),
+    XyzPreset("CartoDb Dark Matter", "http://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"),
+    XyzPreset("CartoDb Dark Matter (No Labels)", "http://basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}.png"),
+    XyzPreset("CartoDb Positron", "http://basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"),
+    XyzPreset("CartoDb Positron (No Labels)", "http://basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png"),
+    XyzPreset("Esri Boundaries Places", "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"),
+    XyzPreset("Esri Gray (dark)", "http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}"),
+    XyzPreset("Esri Gray (light)", "http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"),
+    XyzPreset("Esri Hillshade", "http://services.arcgisonline.com/ArcGIS/rest/services/Elevation/World_Hillshade/MapServer/tile/{z}/{y}/{x}"),
+    XyzPreset("Esri National Geographic", "http://services.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}"),
+    XyzPreset("Esri Navigation Charts", "http://services.arcgisonline.com/ArcGIS/rest/services/Specialty/World_Navigation_Charts/MapServer/tile/{z}/{y}/{x}"),
+    XyzPreset("Esri Ocean", "https://services.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}"),
+    XyzPreset("Esri Physical Map", "https://services.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}"),
+    XyzPreset("Esri Satellite", "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"),
+    XyzPreset("Esri Shaded Relief", "https://server.arcgisonline.com/ArcGIS/rest/services/World_Shaded_Relief/MapServer/tile/{z}/{y}/{x}"),
+    XyzPreset("Esri Standard", "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}"),
+    XyzPreset("Esri Topo World", "http://services.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"),
+    XyzPreset("Esri Transportation", "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}"),
+    XyzPreset("Google Maps", "https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"),
+    XyzPreset("Google Satellite", "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"),
+    XyzPreset("Google Satellite Hybrid", "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"),
+    XyzPreset("Google Terrain", "https://mt1.google.com/vt/lyrs=t&x={x}&y={y}&z={z}"),
+    XyzPreset("Google Terrain Hybrid", "https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}"),
+    XyzPreset("Mapzen Global Terrain", "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"),
+    XyzPreset("Gempa", "https://demo.gempa.de/gaps/tiles/{z}/{y}/{x}"),
+    XyzPreset("OpenStreetMap", "https://tile.openstreetmap.org/{z}/{x}/{y}.png"),
+    XyzPreset("OpenTopoMap", "https://tile.opentopomap.org/{z}/{x}/{y}.png"),
 )
 
 DEFAULT_EXTENT_3857 = Extent(-1400000.0, 4100000.0, 4200000.0, 7800000.0)
@@ -119,6 +119,13 @@ class XyzPresetsWindow(QMainWindow):
         self.preset_combo.setMinimumWidth(260)
         for index, preset in enumerate(PRESETS):
             self.preset_combo.addItem(preset.name, index)
+        self.preset_combo.setCurrentIndex(
+            next(
+                index
+                for index, preset in enumerate(PRESETS)
+                if preset.name == "OpenStreetMap"
+            )
+        )
         self.preset_combo.currentIndexChanged.connect(self.reload_preset)
         toolbar.addWidget(self.preset_combo)
 
