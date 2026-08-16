@@ -1,5 +1,5 @@
 import sys
-from PySide6.QtCore import QEvent, QObject, Qt, QTimer
+from PySide6.QtCore import QTimer
 from PySide6.QtWidgets import QApplication, QComboBox, QHBoxLayout, QLabel, QMainWindow, QPushButton, QTextEdit, QVBoxLayout, QWidget
 from geokernel import CoordinateSystemFactory, CoordinateSystemPreset, Extent, ShapeType, Viewer, ViewerEventType, ViewerTool
 from common import application_icon
@@ -9,19 +9,6 @@ MODES = (
     ("Polyline", "Drawn Polyline", ShapeType.POLYLINE, ViewerTool.ADD_POLYLINE),
     ("Polygon", "Drawn Polygon", ShapeType.POLYGON, ViewerTool.ADD_POLYGON),
 )
-
-class MousePressFilter(QObject):
-    def __init__(self, window: "WktWriteWindow") -> None:
-        super().__init__(window)
-        self.window = window
-
-    def eventFilter(self, watched, event) -> bool:
-        if (
-            event.type() == QEvent.Type.MouseButtonPress
-            and event.button() == Qt.MouseButton.LeftButton
-        ):
-            self.window.handle_map_mouse_press()
-        return super().eventFilter(watched, event)
 
 class WktWriteWindow(QMainWindow):
     def __init__(self) -> None:
@@ -34,9 +21,6 @@ class WktWriteWindow(QMainWindow):
         self.layer_indexes: dict[str, int] = {}
         self.drawing_sketch = False
         self.initialized = False
-
-        self.mouse_filter = MousePressFilter(self)
-        self.viewer_widget.installEventFilter(self.mouse_filter)
 
         self.setWindowTitle("WktWrite")
         self.setWindowIcon(application_icon())
@@ -193,6 +177,10 @@ class WktWriteWindow(QMainWindow):
             self.drawing_sketch = True
 
     def on_viewer_event(self, event) -> None:
+        if event.event_type == ViewerEventType.MAP_MOUSE_DOWN:
+            self.handle_map_mouse_press()
+            return
+
         if event.event_type != ViewerEventType.LAYER_EDIT_STATE_CHANGED:
             return
         layer_index = self.active_layer_index()
