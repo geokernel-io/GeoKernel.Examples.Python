@@ -10,7 +10,7 @@ from geokernel.dll import GeoKernelDll, load_library
 
 
 class TerrainViewer(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, library=None):
         super().__init__(parent)
         if sys.platform != "win32":
             raise RuntimeError("This example requires the Windows x64 Viewer3D runtime.")
@@ -18,7 +18,7 @@ class TerrainViewer(QWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_NativeWindow)
         self.setStyleSheet("background: #090f16")
         self._runtime = GeoKernelDll()
-        library = self._runtime.bin_dir / "GeoKernel.Viewer3D.dll"
+        library = Path(library) if library else self._runtime.bin_dir / "GeoKernel.Viewer3D.dll"
         if not library.is_file():
             raise RuntimeError("Install geokernel==1.5.30 to use TerrainLoading.")
         self._api = load_library(library)
@@ -69,6 +69,41 @@ class TerrainViewer(QWidget):
         self.initialize()
         self._check(self._api.GeoKernel3D_LoadTerrain(
             self._handle, str(Path(path).resolve()).encode("utf-8"), resolution))
+
+    def enable_imagery_api(self):
+        """Resolve the newer imagery API before starting downloads or a native load."""
+        signatures = {
+            "LoadTerrainAndImagery": (
+                ctypes.c_int,
+                [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int],
+            ),
+            "SetImageryVisible": (ctypes.c_int, [ctypes.c_void_p, ctypes.c_int]),
+        }
+        for name, (result, arguments) in signatures.items():
+            try:
+                function = getattr(self._api, "GeoKernel3D_" + name)
+            except AttributeError as error:
+                raise RuntimeError(
+                    "This SDK does not include the terrain imagery API. "
+                    "Build GeoKernel.Viewer3D locally and set "
+                    "GEOKERNEL_VIEWER3D_LIBRARY to the updated DLL."
+                ) from error
+            function.restype = result
+            function.argtypes = arguments
+
+    def load_terrain_and_imagery(self, path, imagery_path, resolution):
+        self.initialize()
+        self._check(self._api.GeoKernel3D_LoadTerrainAndImagery(
+            self._handle,
+            str(Path(path).resolve()).encode("utf-8"),
+            str(Path(imagery_path).resolve()).encode("utf-8"),
+            resolution,
+        ))
+
+    def set_imagery_visible(self, visible):
+        if self._handle:
+            self._check(self._api.GeoKernel3D_SetImageryVisible(
+                self._handle, int(visible)))
 
     def poll_load(self):
         state = self._api.GeoKernel3D_PollLoad(self._handle)
