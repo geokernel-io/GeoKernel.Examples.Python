@@ -5,3 +5,4 @@ outputs/
 data/
 .idea/
 .vscode/
+.venv-*/
