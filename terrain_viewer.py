@@ -105,6 +105,34 @@ class TerrainViewer(QWidget):
             self._check(self._api.GeoKernel3D_SetImageryVisible(
                 self._handle, int(visible)))
 
+    def enable_camera_api(self):
+        for name, args in {
+            "GetCamera": [ctypes.c_void_p, ctypes.POINTER(ctypes.c_float)],
+            "MoveCamera": [ctypes.c_void_p, ctypes.POINTER(ctypes.c_float), ctypes.c_int],
+            "StopCamera": [ctypes.c_void_p],
+        }.items():
+            try:
+                function = getattr(self._api, "GeoKernel3D_" + name)
+            except AttributeError as error:
+                raise RuntimeError("Build the current local Viewer3D SDK for camera navigation.") from error
+            function.restype = ctypes.c_int
+            function.argtypes = args
+
+    def get_camera(self):
+        values = (ctypes.c_float * 6)()
+        self._check(self._api.GeoKernel3D_GetCamera(self._handle, values))
+        return list(values)
+
+    def move_camera(self, values, duration_ms=1200):
+        if len(values) != 6:
+            raise ValueError("A camera requires six values.")
+        values = (ctypes.c_float * 6)(*values)
+        self._check(self._api.GeoKernel3D_MoveCamera(self._handle, values, duration_ms))
+
+    def stop_camera(self):
+        if self._handle:
+            self._check(self._api.GeoKernel3D_StopCamera(self._handle))
+
     def poll_load(self):
         state = self._api.GeoKernel3D_PollLoad(self._handle)
         return state if state == -2 else self._check(state)
