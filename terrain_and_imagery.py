@@ -1,6 +1,5 @@
 """Load the Sagrada Familia DEM and orthophoto automatically."""
 
-import os
 import sys
 from pathlib import Path
 
@@ -23,15 +22,7 @@ class TerrainAndImageryWindow(QMainWindow):
         self.setWindowTitle("TerrainAndImagery — GeoKernel")
         self.setWindowIcon(application_icon())
         self.resize(1200, 800)
-        # Until the imagery API is published, use the explicitly selected DLL
-        # or the sibling GeoKernel checkout's Release build. Other examples keep
-        # using the installed package unchanged.
-        local_library = Path(__file__).resolve().parent.parent / (
-            "GeoKernel/outputs/build/Release/GeoKernel.Viewer3D.dll")
-        library = os.environ.get("GEOKERNEL_VIEWER3D_LIBRARY")
-        if not library and local_library.is_file():
-            library = local_library
-        self.viewer = TerrainViewer(self, library=library)
+        self.viewer = TerrainViewer(self)
         self.viewer.enable_imagery_api()
         self.setCentralWidget(self.viewer)
 

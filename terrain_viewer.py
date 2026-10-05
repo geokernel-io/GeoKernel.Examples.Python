@@ -1,4 +1,4 @@
-"""Small PySide6 adapter for the Viewer3D C API shipped in GeoKernel 1.5.30."""
+"""Small PySide6 adapter for the Viewer3D C API shipped in GeoKernel 1.5.32."""
 
 import ctypes
 import sys
@@ -10,7 +10,7 @@ from geokernel.dll import GeoKernelDll, load_library
 
 
 class TerrainViewer(QWidget):
-    def __init__(self, parent=None, library=None):
+    def __init__(self, parent=None, *, library=None):
         super().__init__(parent)
         if sys.platform != "win32":
             raise RuntimeError("This example requires the Windows x64 Viewer3D runtime.")
@@ -18,9 +18,11 @@ class TerrainViewer(QWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_NativeWindow)
         self.setStyleSheet("background: #090f16")
         self._runtime = GeoKernelDll()
-        library = Path(library) if library else self._runtime.bin_dir / "GeoKernel.Viewer3D.dll"
+        # Existing examples always use the installed SDK. New API development
+        # may explicitly supply a DLL; no source-checkout fallback is performed.
+        library = Path(library).resolve() if library else self._runtime.bin_dir / "GeoKernel.Viewer3D.dll"
         if not library.is_file():
-            raise RuntimeError("Install geokernel==1.5.30 to use TerrainLoading.")
+            raise RuntimeError(f"Viewer3D library not found: {library}")
         self._api = load_library(library)
         signatures = {
             "Create": (ctypes.c_void_p, [ctypes.c_void_p]),
@@ -85,8 +87,7 @@ class TerrainViewer(QWidget):
             except AttributeError as error:
                 raise RuntimeError(
                     "This SDK does not include the terrain imagery API. "
-                    "Build GeoKernel.Viewer3D locally and set "
-                    "GEOKERNEL_VIEWER3D_LIBRARY to the updated DLL."
+                    "Install geokernel==1.5.32 to use this Viewer3D API."
                 ) from error
             function.restype = result
             function.argtypes = arguments
@@ -105,6 +106,119 @@ class TerrainViewer(QWidget):
             self._check(self._api.GeoKernel3D_SetImageryVisible(
                 self._handle, int(visible)))
 
+    def enable_roads_api(self):
+        signatures = {
+            "LoadRoadsOnTerrain": [ctypes.c_void_p, ctypes.c_char_p,
+                                   ctypes.c_char_p, ctypes.c_char_p, ctypes.c_int],
+            "SetRoadStyle": [ctypes.c_void_p, ctypes.c_int, ctypes.c_float,
+                             ctypes.c_int, ctypes.c_int, ctypes.c_int],
+            "GetRoadVertexCount": [ctypes.c_void_p, ctypes.POINTER(ctypes.c_uint64)],
+        }
+        for name, arguments in signatures.items():
+            try:
+                function = getattr(self._api, "GeoKernel3D_" + name)
+            except AttributeError as error:
+                raise RuntimeError(
+                    "Install geokernel==1.5.32 to use this Viewer3D API."
+                ) from error
+            function.restype = ctypes.c_int
+            function.argtypes = arguments
+
+    def load_roads_on_terrain(self, path, imagery_path, roads_path, resolution):
+        self.initialize()
+        paths = [str(Path(p).resolve()).encode("utf-8")
+                 for p in (path, imagery_path, roads_path)]
+        self._check(self._api.GeoKernel3D_LoadRoadsOnTerrain(
+            self._handle, *paths, resolution))
+
+    def set_road_style(self, visible, opacity, color):
+        if self._handle:
+            self._check(self._api.GeoKernel3D_SetRoadStyle(
+                self._handle, int(visible), opacity,
+                color.red(), color.green(), color.blue()))
+
+    def get_road_vertex_count(self):
+        count = ctypes.c_uint64()
+        self._check(self._api.GeoKernel3D_GetRoadVertexCount(
+            self._handle, ctypes.byref(count)))
+        return count.value
+
+    def enable_buildings_api(self):
+        signatures = {
+            "LoadBuildingsOnTerrain": [ctypes.c_void_p, ctypes.c_char_p,
+                                   ctypes.c_char_p, ctypes.c_char_p, ctypes.c_float, ctypes.c_int],
+            "SetBuildingStyle": [ctypes.c_void_p, ctypes.c_int, ctypes.c_float,
+                             ctypes.c_int, ctypes.c_int, ctypes.c_int],
+            "GetBuildingVertexCount": [ctypes.c_void_p, ctypes.POINTER(ctypes.c_uint64)],
+        }
+        for name, arguments in signatures.items():
+            try:
+                function = getattr(self._api, "GeoKernel3D_" + name)
+            except AttributeError as error:
+                raise RuntimeError(
+                    "Install geokernel==1.5.32 to use this Viewer3D API."
+                ) from error
+            function.restype = ctypes.c_int
+            function.argtypes = arguments
+
+    def load_buildings_on_terrain(self, path, imagery_path, buildings_path, building_height, resolution):
+        self.initialize()
+        paths = [str(Path(p).resolve()).encode("utf-8")
+                 for p in (path, imagery_path, buildings_path)]
+        self._check(self._api.GeoKernel3D_LoadBuildingsOnTerrain(
+            self._handle, *paths, building_height, resolution))
+
+    def set_building_style(self, visible, opacity, color):
+        if self._handle:
+            self._check(self._api.GeoKernel3D_SetBuildingStyle(
+                self._handle, int(visible), opacity,
+                color.red(), color.green(), color.blue()))
+
+    def get_building_vertex_count(self):
+        count = ctypes.c_uint64()
+        self._check(self._api.GeoKernel3D_GetBuildingVertexCount(
+            self._handle, ctypes.byref(count)))
+        return count.value
+
+    def enable_model_api(self):
+        signatures = {
+            "LoadModelOnTerrain": [ctypes.c_void_p, ctypes.c_char_p, ctypes.c_char_p,
+                                   ctypes.c_char_p, ctypes.c_char_p,
+                                   ctypes.POINTER(ctypes.c_double), ctypes.c_int],
+            "SetModelVisible": [ctypes.c_void_p, ctypes.c_int],
+            "FocusModel": [ctypes.c_void_p],
+            "GetModelVertexCount": [ctypes.c_void_p, ctypes.POINTER(ctypes.c_uint64)],
+        }
+        for name, arguments in signatures.items():
+            try:
+                function = getattr(self._api, "GeoKernel3D_" + name)
+            except AttributeError as error:
+                raise RuntimeError("Install geokernel==1.5.32 for ModelPlacement.") from error
+            function.restype = ctypes.c_int
+            function.argtypes = arguments
+
+    def load_model_on_terrain(self, dem, imagery, model, geoid, placement, resolution=512):
+        import math
+        if len(placement) != 7 or not all(math.isfinite(value) for value in placement):
+            raise ValueError("Specify seven finite placement values.")
+        self.initialize()
+        paths = [str(Path(p).resolve()).encode("utf-8") for p in (dem, imagery, model, geoid)]
+        values = (ctypes.c_double * 7)(*placement)
+        self._check(self._api.GeoKernel3D_LoadModelOnTerrain(self._handle, *paths, values, resolution))
+
+    def set_model_visible(self, visible):
+        if self._handle:
+            self._check(self._api.GeoKernel3D_SetModelVisible(self._handle, int(visible)))
+
+    def focus_model(self):
+        if self._handle:
+            self._check(self._api.GeoKernel3D_FocusModel(self._handle))
+
+    def get_model_vertex_count(self):
+        count = ctypes.c_uint64()
+        self._check(self._api.GeoKernel3D_GetModelVertexCount(self._handle, ctypes.byref(count)))
+        return count.value
+
     def enable_camera_api(self):
         for name, args in {
             "GetCamera": [ctypes.c_void_p, ctypes.POINTER(ctypes.c_float)],
@@ -114,7 +228,7 @@ class TerrainViewer(QWidget):
             try:
                 function = getattr(self._api, "GeoKernel3D_" + name)
             except AttributeError as error:
-                raise RuntimeError("Build the current local Viewer3D SDK for camera navigation.") from error
+                raise RuntimeError("Install geokernel==1.5.32 for camera navigation.") from error
             function.restype = ctypes.c_int
             function.argtypes = args
 
