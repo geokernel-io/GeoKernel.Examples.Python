@@ -1,11 +1,29 @@
 # GeoKernel Python Examples
 
-All examples use the shared `requirements.txt`, pinned to GeoKernel 1.5.35.
+The existing examples use the shared `requirements.txt`, pinned to GeoKernel 1.5.39.
 Install once in your virtual environment with `python -m pip install -r requirements.txt`.
+
+## GeoAI task examples (published SDK 1.5.39)
+
+- [Dynamic World](dynamic_world_inference-README.md): `dynamic_world_inference.py`, with source-only startup, verified model/data download, Run/Cancel, output opacity and Shapefile export.
+- [HOTOSM building footprints](hotosm_building_footprints-README.md): `hotosm_building_footprints.py`, the fixed RGB sample, threshold 0.50, session-only polygon overlay and Shapefile export.
+- [GeoAI USA building footprints](geoai_usa_building_footprints-README.md): `geoai_usa_building_footprints.py`, Mask R-CNN on the same RGB raster, confidence 0.50 and explicit Shapefile export.
+- [Prithvi flood analysis](prithvi_flood_analysis-README.md): `prithvi_flood_analysis.py`, original multispectral input, separate RGB display and water-only Shapefile export.
+
+- [PRUE field boundaries](prue_field_boundaries-README.md): `prue_field_boundaries.py`, two-period eight-band Sentinel-2 input and field-interior Shapefile export.
+
+- [SAM3 segmentation](sam3_segmentation_inference-README.md): `sam3_segmentation_inference.py`, text and point/box prompts, draft review, accepted Shapefile/GeoTIFF export.
+
+- [SEN2SR super resolution](sen2sr_super_resolution-README.md): `sen2sr_super_resolution.py`, shared-contrast comparison and four-band Float32 GeoTIFF export.
+
+These examples share `geoai_window.py` for rendering/job ownership and `geoai_support.py` for immutable profiles and verified input preparation.
+`geoai_raster.py` prepares spectral-source RGB displays on a worker using the SDK-shipped GDAL. `geoai_vector.py` prepares job-owned WGS84 polygon display copies while preserving the original export data and applies vector brush/outline opacity.
+
+Install `requirements-geoai.txt` for the seven GeoAI examples. Both requirements files now use published GeoKernel 1.5.39. The SDK and native runtime come from PyPI; sibling source repositories are not selected automatically.
 
 ## GlobeHello (Python)
 
-`globe_hello.py` uses the published **geokernel 1.5.35** package and its PySide6
+`globe_hello.py` uses the published **geokernel 1.5.39** package and its PySide6
 Globe widget. Like Qt, WinForms and WPF GlobeHello, it starts with a blank globe;
 the toolbar independently enables atmosphere, Esri satellite imagery, online DEM
 and sunlight. The icon is shared with other examples and the status bar has a
@@ -37,7 +55,7 @@ Vertical exaggeration stays at 1×. Terrain uses the regional geoid correction;
 building alignment is approximate. Hiding clears tiles; showing restarts streaming.
 Stop retains the currently loaded tiles.
 
-Uses the published GeoKernel 1.5.35 package. No local SDK build or DLL override is required.
+Uses the published GeoKernel 1.5.39 package. No local SDK build or DLL override is required.
 
 ```cmd
 cd /d "D:\projects\GeoKernel.Examples.Python" && .venv\Scripts\python.exe -m pip install -r requirements.txt && .venv\Scripts\python.exe tiles_3d_streaming.py
@@ -55,13 +73,13 @@ uses straight segments, not terrain-following length. Area is horizontal plan ar
 not terrain surface area. Invalid polygons report an error. Maximum 64 points;
 the DEM vertical datum is unverified.
 
-Uses the published GeoKernel 1.5.35 package. No local SDK build or DLL override is required.
+Uses the published GeoKernel 1.5.39 package. No local SDK build or DLL override is required.
 
 ```cmd
 cd /d "D:\projects\GeoKernel.Examples.Python" && .venv\Scripts\python.exe -m pip install -r requirements.txt && .venv\Scripts\python.exe measurement_3d.py
 ```
 
-Uses the published GeoKernel 1.5.35 package. No local SDK build or DLL override is required.
+Uses the published GeoKernel 1.5.39 package. No local SDK build or DLL override is required.
 
 Official Python examples for the GeoKernel native GIS SDK.
 
@@ -97,7 +115,7 @@ Run from CMD:
 cd /d "D:\projects\GeoKernel.Examples.Python" && .venv\Scripts\python.exe -m pip install -r requirements.txt && .venv\Scripts\python.exe roads_on_terrain.py
 ```
 
-The example uses the published `geokernel==1.5.35` package. No local SDK build is required.
+The example uses the published `geokernel==1.5.39` package. No local SDK build is required.
 
 ## Buildings3D (Python)
 
@@ -111,7 +129,7 @@ Visibility, color, opacity and terrain exaggeration are also adjustable.
 cd /d "D:\projects\GeoKernel.Examples.Python" && .venv\Scripts\python.exe -m pip install -r requirements.txt && .venv\Scripts\python.exe buildings_3d.py
 ```
 
-The example uses the published `geokernel==1.5.35` package. No local SDK build is required.
+The example uses the published `geokernel==1.5.39` package. No local SDK build is required.
 
 ## ModelPlacement (Python)
 
@@ -125,7 +143,7 @@ before the scene is displayed; no placeholder model is used.
 cd /d "D:\projects\GeoKernel.Examples.Python" && .venv\Scripts\python.exe -m pip install -r requirements.txt && .venv\Scripts\python.exe model_placement.py
 ```
 
-The example uses the published `geokernel==1.5.35` package. No local SDK build is required.
+The example uses the published `geokernel==1.5.39` package. No local SDK build is required.
 Placement is approximate. Model credit and license are retained in the download.
 
 ## FeaturePicking (Python)
@@ -136,7 +154,7 @@ attributes. Multiple selection, active selection, zoom to selection, visibility
 and vertical exaggeration controls are included. Esc clears the selection.
 Building heights are illustrative (9 metres).
 
-Uses the published GeoKernel 1.5.35 package. No local SDK build or DLL override is required.
+Uses the published GeoKernel 1.5.39 package. No local SDK build or DLL override is required.
 
 Build the native target from a fresh CMD window:
 
@@ -161,7 +179,7 @@ are provisional. Source data is not modified. Point size is fixed at one pixel.
 Downloads use the shared sample-data helper and cache. During download/extraction,
 the window stays open until the helper returns; native reading can be cancelled.
 
-Uses the published GeoKernel 1.5.35 package. No local SDK build or DLL override is required.
+Uses the published GeoKernel 1.5.39 package. No local SDK build or DLL override is required.
 
 From **CMD**, using the existing virtual environment:
 
@@ -181,7 +199,7 @@ analysis raster. Mesh resolution affects results. Aspect is clockwise from north
 in local ENU, with eight sectors spanning ±22.5° and a flat class below 0.01°.
 Heights are metres with an unverified vertical reference.
 
-Uses the published GeoKernel 1.5.35 package. No local SDK build or DLL override is required.
+Uses the published GeoKernel 1.5.39 package. No local SDK build or DLL override is required.
 
 From **CMD**, with the existing virtual environment:
 
@@ -201,7 +219,7 @@ tick, up to 64 route points and 4096 samples. Results describe the loaded terrai
 mesh in its unverified source vertical datum. Missing samples remain gaps;
 display exaggeration does not affect measurements.
 
-Uses the published GeoKernel 1.5.35 package. No local SDK build or DLL override is required.
+Uses the published GeoKernel 1.5.39 package. No local SDK build or DLL override is required.
 
 From **CMD**, with the existing virtual environment:
 
@@ -222,7 +240,7 @@ Analysis samples the loaded 512-sample terrain mesh; buildings, vegetation and
 refraction are excluded. Small obstacles between samples may be missed. Vertical
 datum is unverified; exaggeration changes only the view.
 
-Uses the published GeoKernel 1.5.35 package. No local SDK build or DLL override is required.
+Uses the published GeoKernel 1.5.39 package. No local SDK build or DLL override is required.
 
 From **CMD**, with the existing virtual environment:
 
@@ -244,7 +262,7 @@ include records with no drawable geometry. Changes are session-only; reloading
 replaces the scene. Building heights are illustrative (9 m), and the DEM vertical
 datum is unverified.
 
-Uses the published GeoKernel 1.5.35 package. No local SDK build or DLL override is required.
+Uses the published GeoKernel 1.5.39 package. No local SDK build or DLL override is required.
 
 From **CMD**, using the existing virtual environment:
 
@@ -266,7 +284,7 @@ Cancelled or failed preparation retains the previous scene. Advanced model,
 point-cloud, globe, 3D Tiles, analysis, time-series and geoid-conversion projects
 are outside this sample's scope.
 
-Uses the published GeoKernel 1.5.35 package. No local SDK build or DLL override is required.
+Uses the published GeoKernel 1.5.39 package. No local SDK build or DLL override is required.
 
 Run from CMD:
 
@@ -282,7 +300,7 @@ imagery, DEM, atmosphere and sunlight enabled. The four features can be toggled
 independently. Navigation includes zoom in/out, rotate left/right, tilt up/down,
 top view, north alignment and Overview to restore the starting camera.
 
-Uses the published `geokernel==1.5.35` package and its pinned PySide6 runtime.
+Uses the published `geokernel==1.5.39` package and its pinned PySide6 runtime.
 Windows x64, a Vulkan-capable graphics driver and a valid license are required.
 The SDK installs automatically with pip; imagery and elevation stream on demand
 and require internet access. No synthetic data or local SDK checkout is used.
@@ -311,7 +329,7 @@ opacity, base color, Zoom to buildings and Esri on/off. Click a building to see
 its attributes; hover the status bar to read long values. Polygons rejected by
 SDK fill validation remain outline-only and are counted in the status bar.
 
-Uses published geokernel==1.5.35 and its pinned PySide6 runtime. Requires Windows
+Uses published geokernel==1.5.39 and its pinned PySide6 runtime. Requires Windows
 x64, a Vulkan-capable graphics driver and a valid license. Internet is needed for
 the first sample download and satellite imagery.
 
@@ -339,7 +357,7 @@ height. The example uses the reference sphere without DEM. Controls remain disab
 until geometry generation and GPU upload finish. Includes Zoom to buildings,
 Atmosphere and Esri toggles, the application icon and a fixed 24-pixel status bar.
 
-Uses published `geokernel==1.5.35` and its pinned PySide6 runtime. Requires Windows
+Uses published `geokernel==1.5.39` and its pinned PySide6 runtime. Requires Windows
 x64, a Vulkan-capable graphics driver and a valid license. Internet is required for
 the first sample download and satellite imagery. Reuse `.venv-globe` if it exists:
 
@@ -356,7 +374,7 @@ the native globe, including when an extrusion job is still running.
 
 `globe_model_placement.py` automatically downloads the real Sagrada Familia model,
 verifies its archive SHA-256 checksum and caches the complete glTF, buffers and
-textures in `data/sagrada_familia_3d_model`. The published `geokernel==1.5.35`
+textures in `data/sagrada_familia_3d_model`. The published `geokernel==1.5.39`
 package and its pinned PySide6 runtime are installed with pip.
 
 ```powershell
@@ -378,7 +396,7 @@ last accepted placement. Controls remain disabled during asynchronous geometry
 work and GPU upload. Includes the application icon, fixed 24-pixel status bar,
 native cleanup on close, and no application command-line options or test modes.
 
-Known SDK 1.5.35 limitation: heading 30 degrees with scale 1.5 is rejected with
+Known SDK 1.5.38 limitation: heading 30 degrees with scale 1.5 is rejected with
 `Model is too small for scene precision.` Scale 2 succeeds. The example displays
 the error and restores accepted input values while retaining the previous model.
 This native precision limitation requires a separate SDK fix/release.
@@ -396,7 +414,7 @@ py -3 -m venv .venv-globe
 .\.venv-globe\Scripts\pythonw.exe globe_raster_services.py
 ```
 
-Reuse `.venv-globe` if it exists. Uses published `geokernel==1.5.35` and its pinned
+Reuse `.venv-globe` if it exists. Uses published `geokernel==1.5.39` and its pinned
 PySide6 runtime. Requires Windows x64, Python 3.11+, a Vulkan-capable graphics
 driver and a valid license. Internet is needed for initial downloads and imagery.
 
@@ -419,7 +437,7 @@ py -3 -m venv .venv-globe
 .\.venv-globe\Scripts\pythonw.exe globe_terrain_analysis.py
 ```
 
-Reuse `.venv-globe` if present. Uses published `geokernel==1.5.35`. Requires Windows
+Reuse `.venv-globe` if present. Uses published `geokernel==1.5.39`. Requires Windows
 x64, Python 3.11+, a Vulkan-capable GPU, valid license and internet for downloads/imagery.
 
 Select a tool and click the terrain: Line of sight takes observer/target points

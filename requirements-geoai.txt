@@ -1,0 +1,3 @@
+# Published GeoAI SDK and its matching Qt runtime.
+geokernel==1.5.39
+PySide6==6.11.0
