@@ -5,6 +5,7 @@ Install once in your virtual environment with `python -m pip install -r requirem
 
 ## GeoAI task examples (published SDK 1.5.39)
 
+- [Building change review](building_change_review-README.md): `building_change_review.py`, Oosterwold 2016/2025 synchronized maps, change candidates, vertex editing, review decisions and approved-only GeoJSON export. Install `requirements-building-change.txt`.
 - [Dynamic World](dynamic_world_inference-README.md): `dynamic_world_inference.py`, with source-only startup, verified model/data download, Run/Cancel, output opacity and Shapefile export.
 - [HOTOSM building footprints](hotosm_building_footprints-README.md): `hotosm_building_footprints.py`, the fixed RGB sample, threshold 0.50, session-only polygon overlay and Shapefile export.
 - [GeoAI USA building footprints](geoai_usa_building_footprints-README.md): `geoai_usa_building_footprints.py`, Mask R-CNN on the same RGB raster, confidence 0.50 and explicit Shapefile export.
