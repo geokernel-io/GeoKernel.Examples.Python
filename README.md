@@ -3,6 +3,15 @@
 The existing examples use the shared `requirements.txt`, pinned to GeoKernel 1.5.39.
 Install once in your virtual environment with `python -m pip install -r requirements.txt`.
 
+## DSM to DTM examples (published SDK 1.5.40)
+
+- [DSM to DTM](dsm_to_dtm-README.md): `dsm_to_dtm.py`, ground beneath buildings; two linked native 3D views of an original DSM and prepared classical/AI terrain, numeric height transition, fixed transect profile and reference metrics. Install `requirements-dsm-to-dtm.txt`.
+- [DSM to DTM profile](dsm_to_dtm_profile-README.md): `dsm_to_dtm_profile.py`, draw your own A → B transect on two linked native 2D relief maps; DSM, classical, AI and reference heights on one chart, error mode, hover inspection, line RMSE/MAE and CSV export. Same requirements file.
+- [DSM to DTM accuracy](dsm_to_dtm_accuracy-README.md): `dsm_to_dtm_accuracy.py`, three linked 2D maps of the DSM and shared-scale classical/AI reference errors; area selection and presets, RMSE/MAE/bias/P95, histogram, pixel probe and JSON report. Same requirements file.
+- [DSM to DTM processing](dsm_to_dtm_processing-README.md): `dsm_to_dtm_processing.py`, run the classical multiscale-morphological + TIN conversion live with presets and six parameters; DSM, new DTM and removed-height/quality/reference-error maps, scores, pixel probe and GeoTIFF/QA/JSON export. Same requirements file.
+- [DSM to DTM AI versus classical](dsm_to_dtm_ai-README.md): `dsm_to_dtm_ai.py`, run the experimental pix_grad model through GeoKernel.AI and the classical filter on the same full 1 km Zurich DSM; relief/removed-height/error maps, full-input and shared-crop scores, pixel probe and a staged comparison-folder export. Same requirements file.
+- [DSM + orthophoto to DTM](dsm_to_dtm_ortho-README.md): `dsm_to_dtm_ortho.py`, compare classical, DSM-only pix_grad and DSM+RGB rgb_grad_fm terrain estimates on the same full Zurich DSM; orthophoto/DSM input context, four linked 2D maps, full-input and shared-crop scores, pixel probe and a staged comparison-folder export. Same requirements file.
+
 ## GeoAI task examples (published SDK 1.5.39)
 
 - [Building change review](building_change_review-README.md): `building_change_review.py`, Oosterwold 2016/2025 synchronized maps, change candidates, vertex editing, review decisions and approved-only GeoJSON export. Install `requirements-building-change.txt`.
