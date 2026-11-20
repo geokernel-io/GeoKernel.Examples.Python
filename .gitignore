@@ -6,3 +6,5 @@ data/
 .idea/
 .vscode/
 .venv-*/
+# Spatial index sidecars the SDK writes next to vector data
+*.pgidx

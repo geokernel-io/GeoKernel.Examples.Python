@@ -3,6 +3,10 @@
 The existing examples use the shared `requirements.txt`, pinned to GeoKernel 1.5.39.
 Install once in your virtual environment with `python -m pip install -r requirements.txt`.
 
+## Agent workflows (needs geokernel newer than 1.5.40)
+
+- [Agent Map Assistant](agent_map_assistant-README.md): `agent_map_assistant.py`, ask for map operations in plain language; an LLM (or the offline demo's prepared plans) proposes a workflow DSL v2 plan that GeoKernel validates, previews, runs after confirmation when it changes data, undoes and records with hash-chained provenance. Python port of the Qt example; uses `geokernel.agent`.
+
 ## DSM to DTM examples (published SDK 1.5.40)
 
 - [DSM to DTM](dsm_to_dtm-README.md): `dsm_to_dtm.py`, ground beneath buildings; two linked native 3D views of an original DSM and prepared classical/AI terrain, numeric height transition, fixed transect profile and reference metrics. Install `requirements-dsm-to-dtm.txt`.
