@@ -8,12 +8,12 @@ switchable between the real orthophoto and the DSM relief. The reference is eval
 the methods do not feed each other. Uses published **geokernel 1.5.40** and PySide6; inference
 goes through the SDK's raster inference C ABI (`geokernel.ai.AI`), rasters through the SDK's
 GDAL runtime. Support code is in `dsm_ortho.py` (with shared pieces of `dsm_ai.py`), the
-classical filter in `dsm_terrain.py`, the window in `dsm_to_dtm_ortho.py`.
+classical filter in `dsm_terrain.py`, the window in `dsm_ortho_to_dtm.py`.
 
 ```powershell
 py -3.11 -m venv .venv-dsm
 .\.venv-dsm\Scripts\python.exe -m pip install -r requirements-dsm-to-dtm.txt
-.\.venv-dsm\Scripts\python.exe dsm_to_dtm_ortho.py
+.\.venv-dsm\Scripts\python.exe dsm_ortho_to_dtm.py
 ```
 
 Options: `--data-dir <directory>`, `--sample-archive <zip>` / `--sample-url <https-url>` (the

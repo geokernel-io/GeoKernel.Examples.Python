@@ -10,7 +10,7 @@ Install once in your virtual environment with `python -m pip install -r requirem
 - [DSM to DTM accuracy](dsm_to_dtm_accuracy-README.md): `dsm_to_dtm_accuracy.py`, three linked 2D maps of the DSM and shared-scale classical/AI reference errors; area selection and presets, RMSE/MAE/bias/P95, histogram, pixel probe and JSON report. Same requirements file.
 - [DSM to DTM processing](dsm_to_dtm_processing-README.md): `dsm_to_dtm_processing.py`, run the classical multiscale-morphological + TIN conversion live with presets and six parameters; DSM, new DTM and removed-height/quality/reference-error maps, scores, pixel probe and GeoTIFF/QA/JSON export. Same requirements file.
 - [DSM to DTM AI versus classical](dsm_to_dtm_ai-README.md): `dsm_to_dtm_ai.py`, run the experimental pix_grad model through GeoKernel.AI and the classical filter on the same full 1 km Zurich DSM; relief/removed-height/error maps, full-input and shared-crop scores, pixel probe and a staged comparison-folder export. Same requirements file.
-- [DSM + orthophoto to DTM](dsm_to_dtm_ortho-README.md): `dsm_to_dtm_ortho.py`, compare classical, DSM-only pix_grad and DSM+RGB rgb_grad_fm terrain estimates on the same full Zurich DSM; orthophoto/DSM input context, four linked 2D maps, full-input and shared-crop scores, pixel probe and a staged comparison-folder export. Same requirements file.
+- [DSM + orthophoto to DTM](dsm_ortho_to_dtm-README.md): `dsm_ortho_to_dtm.py`, compare classical, DSM-only pix_grad and DSM+RGB rgb_grad_fm terrain estimates on the same full Zurich DSM; orthophoto/DSM input context, four linked 2D maps, full-input and shared-crop scores, pixel probe and a staged comparison-folder export. Same requirements file.
 
 ## GeoAI task examples (published SDK 1.5.39)
 
